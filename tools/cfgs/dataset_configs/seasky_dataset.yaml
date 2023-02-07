@@ -1,0 +1,72 @@
+DATASET: 'SeaSkyDataset'
+DATA_PATH: '/home/zichen/Documents/202DATA/LidarSet'
+
+POINT_CLOUD_RANGE: [0, -20.48, -4, 102.4, 20.48, 2]
+
+MAP_CLASS_TO_KITTI: {
+#    'human': 'Pedestrian',
+}
+
+DATA_SPLIT: {
+    'train': train,
+    'test': test
+}
+
+INFO_PATH: {
+    'train': [seasky_infos_train.pkl],
+    'test': [seasky_infos_test.pkl],
+}
+
+POINT_FEATURE_ENCODING: {
+    encoding_type: absolute_coordinates_encoding,
+    used_feature_list: ['x', 'y', 'z'],
+    src_feature_list: ['x', 'y', 'z'],
+}
+
+DATA_AUGMENTOR:
+    DISABLE_AUG_LIST: ['placeholder']
+    AUG_CONFIG_LIST:
+        - NAME: gt_sampling
+          USE_ROAD_PLANE: False
+          DB_INFO_PATH:
+              - seasky_dbinfos_train.pkl
+          PREPARE: {
+             filter_by_min_points: ['car:5', 'truck:5', 'bus:5', 'train:5', 'pedestrian:5',
+                                    'motor:5', 'bicycle:5'],
+          }
+
+          SAMPLE_GROUPS: [
+              'car:15', 'truck:5', 'bus:10', 'train:5', 'pedestrian:15',
+              'motor:5', 'bicycle:5'
+          ]
+          NUM_POINT_FEATURES: 3
+          DATABASE_WITH_FAKELIDAR: False
+          REMOVE_EXTRA_WIDTH: [0.0, 0.0, 0.0]
+          LIMIT_WHOLE_SCENE: True
+
+        - NAME: random_world_flip
+          ALONG_AXIS_LIST: ['x', 'y']
+
+        - NAME: random_world_rotation
+          WORLD_ROT_ANGLE: [-0.78539816, 0.78539816]
+
+        - NAME: random_world_scaling
+          WORLD_SCALE_RANGE: [0.95, 1.05]
+
+DATA_PROCESSOR:
+    - NAME: mask_points_and_boxes_outside_range
+      REMOVE_OUTSIDE_BOXES: True
+
+    - NAME: shuffle_points
+      SHUFFLE_ENABLED: {
+        'train': True,
+        'test': False
+      }
+
+    - NAME: transform_points_to_voxels
+      VOXEL_SIZE: [0.05, 0.05, 0.1]
+      MAX_POINTS_PER_VOXEL: 5
+      MAX_NUMBER_OF_VOXELS: {
+        'train': 150000,
+        'test': 150000
+      }
