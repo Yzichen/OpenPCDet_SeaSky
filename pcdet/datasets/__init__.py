@@ -13,6 +13,7 @@ from .pandaset.pandaset_dataset import PandasetDataset
 from .lyft.lyft_dataset import LyftDataset
 from .once.once_dataset import ONCEDataset
 from .custom.custom_dataset import CustomDataset
+from .seasky.seasky_dataset import SeaSkyDataset
 
 __all__ = {
     'DatasetTemplate': DatasetTemplate,
@@ -22,7 +23,8 @@ __all__ = {
     'PandasetDataset': PandasetDataset,
     'LyftDataset': LyftDataset,
     'ONCEDataset': ONCEDataset,
-    'CustomDataset': CustomDataset
+    'CustomDataset': CustomDataset,
+    'SeaSkyDataset': SeaSkyDataset
 }
 
 
